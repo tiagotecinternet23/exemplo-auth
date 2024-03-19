@@ -1,11 +1,31 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 
-export default function AreaLogada() {
+import { auth } from "../../firebase.config";
+import { signOut } from "firebase/auth";
+
+export default function AreaLogada({ navigation }) {
+  // Acessando dados do usuário logado
+  // console.log(auth.currentUser);
+
+  const { email, displayName: nome } = auth.currentUser;
+  console.log(email);
+
+  const logout = async () => {
+    try {
+      await signOut(auth);
+      navigation.replace("Inicial");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <View style={estilos.container}>
       <View style={estilos.topo}>
-        <Text style={estilos.bemVindo}>Bem-vindo(a)</Text>
-        <Button title="Logout" color="#D35400" />
+        <Text style={estilos.bemVindo}>Bem-vindo(a) {nome || "visitante"}</Text>
+        <Text>Seu e-mail de cadastro é:</Text>
+        <Text style={{ fontWeight: "bold" }}>{email}</Text>
+        <Button onPress={logout} title="Logout" color="#D35400" />
       </View>
       <View style={estilos.geral}>
         <Text>Você está na área logada.</Text>
